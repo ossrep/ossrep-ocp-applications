@@ -1,0 +1,7 @@
+namespace: ossrep-account
+commonLabels:
+  app: account-db
+resources:
+  - configmap.yaml
+  - statefulset.yaml
+  - service.yaml

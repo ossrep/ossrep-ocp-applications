@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: account-db-ss
+spec:
+  serviceName: account-db-svc
+  replicas: 2
+  selector:
+    matchLabels:
+      run: account-db
+  template:
+    metadata:
+      labels:
+        run: account-db
+    spec:
+      containers:
+      - name: postgresql
+        image: registry.redhat.io/rhel8/postgresql-12
+        env:
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: account-db-cm
+                key: DATABASE_NAME
+          - name: POSTGRESQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: account-db-cm
+                key: ADMIN_USER
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: account-db-cm
+                key: ADMIN_PASSWORD
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        volumeMounts:
+        - name: account-db-vc
+          mountPath: /var/lib/psql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: account-db-vc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 2Gi

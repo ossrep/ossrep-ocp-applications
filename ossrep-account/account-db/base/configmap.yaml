@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: account-db-cm
+data:
+  DATABASE_NAME: account_db
+  ADMIN_USER: admin
+  ADMIN_PASSWORD: admin123
